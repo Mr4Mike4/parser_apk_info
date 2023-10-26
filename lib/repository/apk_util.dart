@@ -1,5 +1,5 @@
-import 'apk_info.dart';
-import 'apk_keys.dart';
+import '../model/apk_info.dart';
+import '../model/apk_keys.dart';
 
 class ApkUtil {
   static String fromApkInfo(final String? apkKey, final ApkInfo? apkInfo) {

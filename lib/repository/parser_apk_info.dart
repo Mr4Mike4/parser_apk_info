@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:meta/meta.dart';
 import 'package:parser_apk_info/model/apk_info.dart';
 import 'package:parser_apk_info/repository/logger.dart';
 import 'package:parser_apk_info/repository/uuid.dart';
@@ -37,13 +38,6 @@ class ParserApkInfo {
   final _regExpValue = RegExp(r"'([^']+)'");
 
   Future<bool> aaptInit(String? aaptPath) async {
-    // final String? androidHome = Platform.environment['ANDROID_SDK_ROOT'];
-    // if ((androidHome ?? '').isEmpty) {
-    //   throw Exception('Missing `ANDROID_HOME` environment variable.');
-    // }
-    // final buildToolsDir = Directory(p.join(androidHome!, 'build-tools'));
-    // final aaptDir = buildToolsDir.listSync().last.path;
-    // _aaptPath = p.join(aaptDir, aaptApp);
     if (aaptPath == null) return false;
     final aapt = File(aaptPath);
     if (await aapt.exists()) {
@@ -73,25 +67,16 @@ class ParserApkInfo {
       } else {
         return null;
       }
-    } catch(e) {
+    } catch (e) {
       return null;
     }
   }
 
-  Future<ApkInfo?> parseFile(File file) async {
-    final aaptPath = _aaptPath;
-    if ((aaptPath ?? '').isEmpty) {
-      throw Exception('aapt not found');
-    }
-    final ProcessResult processResult = await Process.run(
-      aaptPath!,
-      ['dump', 'badging', file.path],
-    );
-
-    final String resultString = processResult.stdout;
+  @visibleForTesting
+  Future<ApkInfo?> parseString(final File file, final String dataString) async {
     // logger.d('parse >> $resultString');
 
-    final rawDataList = _splitter.convert(resultString);
+    final rawDataList = _splitter.convert(dataString);
 
     String? applicationId;
     String? versionCode;
@@ -151,6 +136,19 @@ class ParserApkInfo {
       targetSdkVersion: targetSdkVersion,
       applicationLabel: applicationLabel,
     );
+  }
+
+  Future<ApkInfo?> parseFile(File file) async {
+    final aaptPath = _aaptPath;
+    if ((aaptPath ?? '').isEmpty) {
+      throw Exception('aapt not found');
+    }
+    final ProcessResult processResult = await Process.run(
+      aaptPath!,
+      ['dump', 'badging', file.path],
+    );
+    final String resultString = processResult.stdout;
+    return parseString(file, resultString);
   }
 
   Future<List<ApkInfo>?> parseFiles(Iterable<File> files) async {
