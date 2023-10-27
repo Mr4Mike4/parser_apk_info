@@ -146,6 +146,8 @@ class ParserApkInfo {
     final ProcessResult processResult = await Process.run(
       aaptPath!,
       ['dump', 'badging', file.path],
+      stdoutEncoding: utf8,
+      stderrEncoding: utf8,
     );
     final String resultString = processResult.stdout;
     return parseString(file, resultString);
