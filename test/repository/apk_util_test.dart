@@ -4,18 +4,18 @@ import 'dart:io';
 import 'package:parser_apk_info/model/apk_info.dart';
 import 'package:parser_apk_info/model/apk_keys.dart';
 import 'package:parser_apk_info/repository/apk_util.dart';
-import 'package:parser_apk_info/repository/parser_apk_info.dart';
+import 'package:parser_apk_info/repository/parser_apk_info_aapt.dart';
 import 'package:parser_apk_info/repository/print_logger.dart';
 import 'package:path/path.dart' as p;
 import 'package:test/test.dart';
 
 void main() {
-  late ParserApkInfo _parserApkInfo;
+  late ParserApkInfoAapt _parserApkInfo;
 
   ApkInfo? _apkInfo;
 
   setUp(() async {
-    _parserApkInfo = ParserApkInfo(PrintLogger());
+    _parserApkInfo = ParserApkInfoAapt(PrintLogger());
     final String? androidHome = Platform.environment['ANDROID_SDK_ROOT'];
     if ((androidHome ?? '').isEmpty) {
       throw Exception('Missing `ANDROID_HOME` environment variable.');
