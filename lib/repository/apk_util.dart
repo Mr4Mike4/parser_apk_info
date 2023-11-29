@@ -12,7 +12,7 @@ class ApkUtil {
       case ApkKeys.apkPlatformBuildVersionCode: data = apkInfo?.platformBuildVersionCode;
       case ApkKeys.apkCompileSdkVersion: data = apkInfo?.compileSdkVersion;
       case ApkKeys.apkCompileSdkVersionCodename: data = apkInfo?.compileSdkVersionCodename;
-      case ApkKeys.apkSdkVersion: data = apkInfo?.sdkVersion;
+      case ApkKeys.apkMinSdkVersion: data = apkInfo?.minSdkVersion;
       case ApkKeys.apkTargetSdkVersion: data = apkInfo?.targetSdkVersion;
       case ApkKeys.apkApplicationLabel: data = apkInfo?.applicationLabel;
     }

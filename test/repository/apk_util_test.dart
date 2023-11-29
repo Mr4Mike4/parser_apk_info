@@ -25,13 +25,15 @@ void main() {
 
     _parserApkInfo.aaptInit(aaptPath);
 
+  });
+
+  test('ApkUtil.fromApkInfo test_rus', () async {
+
     final testDataFile = File(p.join('test_resources', 'test_data_rus.txt'));
     final dataString =await testDataFile.readAsString(encoding: utf8);
 
     _apkInfo = await _parserApkInfo.parseString(testDataFile, dataString);
-  });
 
-  test('ApkUtil.fromApkInfo test', () async {
     expect(ApkUtil.fromApkInfo(ApkKeys.apkApplicationId, _apkInfo), 'ru.csa');
     expect(ApkUtil.fromApkInfo(ApkKeys.apkVersionCode, _apkInfo), '10');
     expect(ApkUtil.fromApkInfo(ApkKeys.apkVersionName, _apkInfo), '0.8.4-dev');
@@ -39,7 +41,7 @@ void main() {
     expect(ApkUtil.fromApkInfo(ApkKeys.apkPlatformBuildVersionCode, _apkInfo), '34');
     expect(ApkUtil.fromApkInfo(ApkKeys.apkCompileSdkVersion, _apkInfo), '34');
     expect(ApkUtil.fromApkInfo(ApkKeys.apkCompileSdkVersionCodename, _apkInfo), '14');
-    expect(ApkUtil.fromApkInfo(ApkKeys.apkSdkVersion, _apkInfo), '26');
+    expect(ApkUtil.fromApkInfo(ApkKeys.apkMinSdkVersion, _apkInfo), '26');
     expect(ApkUtil.fromApkInfo(ApkKeys.apkTargetSdkVersion, _apkInfo), '34');
     expect(ApkUtil.fromApkInfo(ApkKeys.apkApplicationLabel, _apkInfo), 'ЦСА');
     expect(ApkUtil.fromApkInfo('gfgfgfg', _apkInfo), isEmpty);

@@ -4,8 +4,9 @@ import 'dart:io';
 import 'package:meta/meta.dart';
 import 'package:parser_apk_info/parser_apk_info.dart';
 
-class ParserApkInfoAapt extends ParserApkInfo {
+import '../model/aapt_keys.dart';
 
+class ParserApkInfoAapt extends ParserApkInfo {
   ParserApkInfoAapt(this._logger);
 
   final Logger _logger;
@@ -34,6 +35,25 @@ class ParserApkInfoAapt extends ParserApkInfo {
     }
   }
 
+  List<String> _dataFromString(String data) {
+    final regExpMatch1 = _regExpValue.allMatches(data);
+    return regExpMatch1
+        .map((e) => e.group(1))
+        .where((e) => e != null)
+        .map((e) => e!)
+        .toList(growable: false);
+  }
+
+  List<T>? _toUnmodifiableList<T>(List<T>? list){
+    if(list == null || list.isEmpty) return null;
+    return List.unmodifiable(list);
+  }
+
+  Map<K, V>? _toUnmodifiableMap<K, V>(Map<K, V>? map){
+    if(map == null || map.isEmpty) return null;
+    return Map.unmodifiable(map);
+  }
+
   @override
   @visibleForTesting
   Future<ApkInfo?> parseString(final File file, final String dataString) async {
@@ -48,38 +68,62 @@ class ParserApkInfoAapt extends ParserApkInfo {
     String? platformBuildVersionCode;
     String? compileSdkVersion;
     String? compileSdkVersionCodename;
-    String? sdkVersion;
+    String? minSdkVersion;
     String? targetSdkVersion;
     String? applicationLabel;
+    Map<String, String>? applicationLabels = {};
+    List<String>? usesPermissions = [];
+    List<String>? nativeCodes;
+    List<String>? locales;
 
     for (final row in rawDataList) {
       _logger.d('row >> $row');
       final arr = row.split(':');
       if (arr.length >= 2) {
+        final key = arr[0];
         final data = arr[1];
-        switch (arr[0]) {
-          case 'package':
-            final regExpMatch1 = _regExpPackage.firstMatch(data);
-            applicationId = regExpMatch1?.group(1);
-            versionCode = regExpMatch1?.group(2);
-            versionName = regExpMatch1?.group(3);
-            platformBuildVersionName = regExpMatch1?.group(4);
-            platformBuildVersionCode = regExpMatch1?.group(5);
-            compileSdkVersion = regExpMatch1?.group(6);
-            compileSdkVersionCodename = regExpMatch1?.group(7);
-            break;
-          case 'sdkVersion':
-            final regExpMatch1 = _regExpValue.firstMatch(data);
-            sdkVersion = regExpMatch1?.group(1);
-            break;
-          case 'targetSdkVersion':
-            final regExpMatch1 = _regExpValue.firstMatch(data);
-            targetSdkVersion = regExpMatch1?.group(1);
-            break;
-          case 'application-label':
-            final regExpMatch1 = _regExpValue.firstMatch(data);
-            applicationLabel = regExpMatch1?.group(1);
-            break;
+        if (key == AaptKeys.package) {
+          final regExpMatch1 = _regExpPackage.firstMatch(data);
+          applicationId = regExpMatch1?.group(1);
+          versionCode = regExpMatch1?.group(2);
+          versionName = regExpMatch1?.group(3);
+          platformBuildVersionName = regExpMatch1?.group(4);
+          platformBuildVersionCode = regExpMatch1?.group(5);
+          compileSdkVersion = regExpMatch1?.group(6);
+          compileSdkVersionCodename = regExpMatch1?.group(7);
+        } else if (key == AaptKeys.sdkVersion) {
+          final regExpMatch1 = _regExpValue.firstMatch(data);
+          minSdkVersion = regExpMatch1?.group(1);
+        } else if (key == AaptKeys.targetSdkVersion) {
+          final regExpMatch1 = _regExpValue.firstMatch(data);
+          targetSdkVersion = regExpMatch1?.group(1);
+        } else if (key == AaptKeys.applicationLabel) {
+          final regExpMatch1 = _regExpValue.firstMatch(data);
+          applicationLabel = regExpMatch1?.group(1);
+        } else if (key.contains(AaptKeys.applicationLabel)) {
+          final lang = key.substring(AaptKeys.applicationLabel.length + 1);
+          final regExpMatch1 = _regExpValue.firstMatch(data);
+          final label = regExpMatch1?.group(1);
+          if (label != null) {
+            applicationLabels[lang] = label ?? '';
+          }
+        } else if (key.contains(AaptKeys.applicationLabel)) {
+          final lang = key.substring(AaptKeys.applicationLabel.length + 1);
+          final regExpMatch1 = _regExpValue.firstMatch(data);
+          final label = regExpMatch1?.group(1);
+          if (label != null) {
+            applicationLabels[lang] = label ?? '';
+          }
+        } else if (key.contains(AaptKeys.usesPermission)) {
+          final regExpMatch1 = _regExpValue.firstMatch(data);
+          final permission = regExpMatch1?.group(1);
+          if (permission != null) {
+            usesPermissions.add(permission);
+          }
+        } else if (key.contains(AaptKeys.nativeCode)) {
+          nativeCodes = _dataFromString(data);
+        } else if (key.contains(AaptKeys.locales)) {
+          locales = _dataFromString(data);
         }
       } else {
         _logger.d('error row >> $row');
@@ -95,9 +139,13 @@ class ParserApkInfoAapt extends ParserApkInfo {
       platformBuildVersionCode: platformBuildVersionCode,
       compileSdkVersion: compileSdkVersion,
       compileSdkVersionCodename: compileSdkVersionCodename,
-      sdkVersion: sdkVersion,
+      minSdkVersion: minSdkVersion,
       targetSdkVersion: targetSdkVersion,
       applicationLabel: applicationLabel,
+      applicationLabels: _toUnmodifiableMap(applicationLabels),
+      usesPermissions: _toUnmodifiableList(usesPermissions),
+      nativeCodes: _toUnmodifiableList(nativeCodes),
+      locales: _toUnmodifiableList(locales),
     );
   }
 

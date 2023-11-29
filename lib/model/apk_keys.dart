@@ -6,9 +6,11 @@ class ApkKeys {
   static const String apkPlatformBuildVersionCode = 'platformBuildVersionCode';
   static const String apkCompileSdkVersion = 'compileSdkVersion';
   static const String apkCompileSdkVersionCodename = 'compileSdkVersionCodename';
-  static const String apkSdkVersion = 'sdkVersion';
+  static const String apkMinSdkVersion = 'minSdkVersion';
   static const String apkTargetSdkVersion = 'targetSdkVersion';
   static const String apkApplicationLabel = 'applicationLabel';
+  static const String apkApplicationLabels = 'applicationLabels';
+  static const String apkUsesPermission = 'usesPermission';
+  static const String apkNativeCode = 'nativeCode';
+  static const String apkLocales = 'locales';
 }
-
-

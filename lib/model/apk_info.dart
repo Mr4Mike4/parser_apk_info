@@ -11,9 +11,13 @@ class ApkInfo {
     this.platformBuildVersionCode,
     this.compileSdkVersion,
     this.compileSdkVersionCodename,
-    this.sdkVersion,
+    this.minSdkVersion,
     this.targetSdkVersion,
     this.applicationLabel,
+    this.applicationLabels,
+    this.usesPermissions,
+    this.nativeCodes,
+    this.locales,
   });
 
   final String uuid;
@@ -25,7 +29,11 @@ class ApkInfo {
   final String? platformBuildVersionCode;
   final String? compileSdkVersion;
   final String? compileSdkVersionCodename;
-  final String? sdkVersion;
+  final String? minSdkVersion;
   final String? targetSdkVersion;
   final String? applicationLabel;
+  final Map<String, String>? applicationLabels;
+  final List<String>? usesPermissions;
+  final List<String>? nativeCodes;
+  final List<String>? locales;
 }

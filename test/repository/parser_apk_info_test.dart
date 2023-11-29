@@ -37,7 +37,7 @@ void main() {
     expect(isInit, isTrue);
   });
 
-  test('parseString test', () async {
+  test('parseString test_rus', () async {
 
     final testDataFile = File(p.join('test_resources', 'test_data_rus.txt'));
     final dataString =await testDataFile.readAsString(encoding: utf8);
@@ -54,8 +54,19 @@ void main() {
     expect(apkInfo?.platformBuildVersionCode, '34');
     expect(apkInfo?.compileSdkVersion, '34');
     expect(apkInfo?.compileSdkVersionCodename, '14');
-    expect(apkInfo?.sdkVersion, '26');
+    expect(apkInfo?.minSdkVersion, '26');
     expect(apkInfo?.targetSdkVersion, '34');
     expect(apkInfo?.applicationLabel, 'ЦСА');
+  });
+
+  test('parseString test', () async {
+
+    final testDataFile = File(p.join('test_resources', 'test_data.txt'));
+    final dataString =await testDataFile.readAsString(encoding: utf8);
+
+    final apkInfo = await _parserApkInfo.parseString(testDataFile, dataString);
+
+    expect(apkInfo, isNotNull);
+
   });
 }
