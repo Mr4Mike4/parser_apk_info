@@ -4,8 +4,6 @@ import 'dart:io';
 import 'package:meta/meta.dart';
 import 'package:parser_apk_info/parser_apk_info.dart';
 
-import '../model/aapt_keys.dart';
-
 class ParserApkInfoAapt extends ParserApkInfo {
   ParserApkInfoAapt(this._logger);
 
@@ -105,14 +103,14 @@ class ParserApkInfoAapt extends ParserApkInfo {
           final regExpMatch1 = _regExpValue.firstMatch(data);
           final label = regExpMatch1?.group(1);
           if (label != null) {
-            applicationLabels[lang] = label ?? '';
+            applicationLabels[lang] = label;
           }
         } else if (key.contains(AaptKeys.applicationLabel)) {
           final lang = key.substring(AaptKeys.applicationLabel.length + 1);
           final regExpMatch1 = _regExpValue.firstMatch(data);
           final label = regExpMatch1?.group(1);
           if (label != null) {
-            applicationLabels[lang] = label ?? '';
+            applicationLabels[lang] = label;
           }
         } else if (key.contains(AaptKeys.usesPermission)) {
           final regExpMatch1 = _regExpValue.firstMatch(data);
