@@ -1,5 +1,5 @@
 name: parser_apk_info
-description: Library for obtaining information about the apk file.
+description: Package for obtaining information about the apk file.
 version: 1.0.1
 homepage:
 
