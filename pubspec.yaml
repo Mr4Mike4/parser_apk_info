@@ -1,9 +1,9 @@
 name: parser_apk_info
 description: Package for obtaining information about the apk file.
 version: 1.0.1
-homepage:
+homepage: https://github.com/Mr4Mike4/parser_apk_info
 
-publish_to: 'none'
+#publish_to: 'none'
 
 environment:
   sdk: '>=3.1.3 <4.0.0'
